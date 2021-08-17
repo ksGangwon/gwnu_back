@@ -25,7 +25,7 @@ app.use(
       secure: false
     }
   })
-)
+);
 
 app.use('/board', boardRouter);
 app.use('/auth', authRouter);
