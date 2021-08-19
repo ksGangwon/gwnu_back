@@ -1,22 +1,14 @@
-import express from 'express';
-import 'express-async-errors';
-import * as boardController from '../controller/board.js';
+import express from "express";
+import "express-async-errors";
+import * as boardController from "../controller/board.js";
 
 const router = express.Router();
 
-// GET /board
-router.get('/', boardController.getBoard);
-
-router.post('/', (req, res, next) => {
-  res.status(201).json(data);
-});
-
-router.put('/', (req, res, next) => {
-  res.status(201).json(data);
-});
-
-router.delete('/', (req, res, next) => {
-  res.status(204);
-});
+// board
+router.get("/", boardController.getBoard);
+router.get("/:id", boardController.getBoardId);
+router.post("/", boardController.createBoard);
+router.put("/:id", boardController.updateBoard);
+router.delete("/:id", boardController.deleteBoard);
 
 export default router;
