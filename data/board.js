@@ -6,7 +6,12 @@ export async function getAll() {
 
 export async function paging(page) {
   return db
-    .execute("SELECT * FROM notice ORDERS LIMIT ?, 10;", [page])
+    .execute(`SELECT *
+              FROM (SELECT
+                @ROWNUM := @ROWNUM+1 as number, T.*
+                FROM notice T, (SELECT @ROWNUM := 0) TMP
+                ORDER BY id ASC) SUB
+              ORDER BY SUB.number DESC LIMIT ?, 10`, [page])
     .then((result) => result[0]);
 }
 
@@ -14,7 +19,7 @@ export async function getById(id) {
   return db
     .execute("SELECT * FROM notice WHERE id=?", [id])
     .then((result) => result[0][0]);
-}
+} 
 
 export async function aws_getById(id) {
   return db
