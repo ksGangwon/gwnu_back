@@ -1,4 +1,4 @@
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config();
 
 function required(key, defaultValue = undefined) {
@@ -11,9 +11,9 @@ function required(key, defaultValue = undefined) {
 
 export const config = {
   db: {
-    host: required('DB_HOST'),
-    user: required('DB_USER'),
-    database: required('DB_DATABASE'),
-    password: required('DB_PASSWORD')
-  }
+    host: required("DB_HOST"),
+    user: required("DB_USER"),
+    database: required("DB_DATABASE"),
+    password: required("DB_PASSWORD"),
+  },
 };
