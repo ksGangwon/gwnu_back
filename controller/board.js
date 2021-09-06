@@ -16,6 +16,7 @@ export async function getBoard(req, res) {
 
 export async function getBoardId(req, res) {
   const id = req.params.id;
+  await boardRepository.inquiry(id);
   const board = await boardRepository.getById(id);
   const files = await boardRepository.aws_getById(id);
   let arr = [board, files];

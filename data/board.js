@@ -18,7 +18,7 @@ export async function getById(id) {
 
 export async function aws_getById(id) {
   return db
-    .execute("SELECT original, url FROM notice_file WHERE id=?", [id])
+    .execute("SELECT originalname, url FROM notice_file WHERE id=?", [id])
     .then((result) => result[0]);
 }
 
@@ -66,6 +66,15 @@ export async function update(id, title, description, category) {
     )
     .then(() => getById(id));
 }
+
+export async function inquiry(id) {
+  return db
+    .execute(
+      "UPDATE notice SET inquiry = inquiry+1 WHERE id=?",
+      [id]
+    )
+    .then(() => getById(id));
+} 
 
 export async function remove(id) {
   return (
