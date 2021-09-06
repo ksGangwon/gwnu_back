@@ -30,28 +30,29 @@ export async function findFile(req, res) {
   console.log("findFile: ", req.body);
   const originalname = req.body.originalname;
   const check = await boardRepository.find(originalname);
-  console.log(check);
-  if(check) {
-    res.status(200);
+  console.log(check.length)
+  if(check.length==0){
+    res.status(200).json({ success: '같은 이름의 파일이 존재하지 않습니다.' });
   } else {
-    res.status(404).json({ message: '이미 존재하는 파일명입니다.' });
+    res.status(200).json({ fail: '이미 같은 이름의 파일이 존재합니다.' });
   }
 }
 
 // notice create
 export async function createBoard(req, res) {
-  const { title, description, category, file } = req.body;
+  const { title, description, category, file, url } = req.body;
+  console.log("안녕"+url)
   const board = await boardRepository.create(title, description, category);
   const lastId = await boardRepository.lastId();
   const id = lastId.id;
   if (file.length) {
     for (let i = 0; i < file.length; i++) {
-      let originalname = file[i].originalname;
-      let url = file[i].url;
-      await boardRepository.aws_create(id, originalname, url);
+      let originalname = file[i];
+      let fileurl = url[i];
+      await boardRepository.aws_create(id, originalname, fileurl);
     }
   }
-  res.status(201).json(board);
+  res.status(201).json({message:"게시물 저장 성공!"});
 }
 
 export async function updateBoard(req, res) {
@@ -88,4 +89,9 @@ export async function deleteBoard(req, res) {
   });
   await boardRepository.remove(id);
   res.sendStatus(204);
+}
+
+export async function upload(req, res) {
+  console.log('업로드 성공')
+  res.status(200).json(req.files[0]);
 }

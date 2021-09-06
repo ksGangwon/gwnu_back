@@ -49,6 +49,7 @@ export async function create(title, description, category) {
 }
 
 export async function aws_create(id, originalname, url) {
+  console.log(url)
   return db
     .execute(
       "INSERT INTO notice_file (id, originalname, url) VALUES(?, ?, ?)",
@@ -80,6 +81,7 @@ export async function lastId() {
 }
 
 export async function find(originalname) {
+  console.log(originalname)
   return db
     .execute("SELECT * FROM notice_file WHERE originalname=?", [originalname])
     .then((result) => result[0]);

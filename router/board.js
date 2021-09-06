@@ -1,8 +1,10 @@
 import express from "express";
 import "express-async-errors";
 import * as boardController from "../controller/board.js";
+import multer from 'multer';
 
 const router = express.Router();
+var upload = multer({ storage: multer.memoryStorage() });
 
 // board
 router.get("/", boardController.getBoard);
@@ -13,5 +15,6 @@ router.post("/", boardController.createBoard); // 업로드
 
 router.put("/:id", boardController.updateBoard);
 router.delete("/:id", boardController.deleteBoard);
+router.post('/uploadFile', upload.any(), boardController.upload)
 
 export default router;
