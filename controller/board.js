@@ -14,6 +14,19 @@ export async function getBoard(req, res) {
   res.status(200).json(data);
 }
 
+export async function getCategory(req, res) {
+  let { page, category } = req.body;
+  console.log("category: ", category);
+  if(page === undefined) {
+    page = 0;
+  }
+  page = parseInt(page)*10;
+  page = page + "";
+  const data = await boardRepository.categoryPage(category, page);
+  console.log(data);
+  res.status(200).json(data);
+}
+
 export async function getBoardId(req, res) {
   const id = req.params.id;
   await boardRepository.inquiry(id);
@@ -42,18 +55,20 @@ export async function findFile(req, res) {
 // notice create
 export async function createBoard(req, res) {
   const { title, description, category, file, url } = req.body;
-  console.log("안녕"+url)
-  const board = await boardRepository.create(title, description, category);
+  const date = now();
+  const board = await boardRepository.create(title, description, category, date);
   const lastId = await boardRepository.lastId();
   const id = lastId.id;
-  if (file.length) {
-    for (let i = 0; i < file.length; i++) {
-      let originalname = file[i];
-      let fileurl = url[i];
-      await boardRepository.aws_create(id, originalname, fileurl);
+  if(file){
+    if (file.length) {
+      for (let i = 0; i < file.length; i++) {
+        let originalname = file[i];
+        let fileurl = url[i];
+        await boardRepository.aws_create(id, originalname, fileurl);
+      }
     }
   }
-  res.status(201).json({message:"게시물 저장 성공!"});
+  res.status(201).json(board);
 }
 
 export async function updateBoard(req, res) {
@@ -95,4 +110,10 @@ export async function deleteBoard(req, res) {
 export async function upload(req, res) {
   console.log('업로드 성공')
   res.status(200).json(req.files[0]);
+}
+
+function now() {
+  let dt = new Date();
+  let str = dt.getFullYear()+'-'+(dt.getMonth()+1)+'-'+dt.getDate();
+  return str;
 }

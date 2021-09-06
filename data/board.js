@@ -15,6 +15,16 @@ export async function paging(page) {
     .then((result) => result[0]);
 }
 
+export async function categoryPage(category, page) {
+  return db
+    .execute(`SELECT * FROM (SELECT @ROWNUM := @ROWNUM+1 as number, T.* 
+                FROM notice T, (SELECT @ROWNUM := 0) TMP 
+                ORDER BY id ASC) SUB 
+              WHERE category = ?
+              ORDER BY SUB.number DESC LIMIT ?, 10`, [category, page])
+    .then((result) => result[0]);
+}
+
 export async function getById(id) {
   return db
     .execute("SELECT * FROM notice WHERE id=?", [id])
@@ -44,11 +54,11 @@ export async function getJoin(id) {
     .then((result) => result[0]);
 }
 
-export async function create(title, description, category) {
+export async function create(title, description, category, date) {
   return db
     .execute(
-      "INSERT INTO notice (title, description, category) VALUES(?, ?, ?)",
-      [title, description, category]
+      "INSERT INTO notice (title, description, category, date) VALUES(?, ?, ?, ?)",
+      [title, description, category, date]
     )
     .then((result) => getById(result[0].insertId));
 }
