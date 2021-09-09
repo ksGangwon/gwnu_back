@@ -1,29 +1,22 @@
 import * as boardRepository from "../data/board.js";
 
 export async function getBoard(req, res) {
-  // Pagings
-  let { page } = req.body; // 1페이지는 0, 2페이지는 1, ...
-  console.log("choose page: ", page);
-  if(page === undefined) {
-    page = 0;
-  }
-  page = parseInt(page)*10;
-  page = page + "";
-  const data = await boardRepository.paging(page);
-  console.log(data);
-  res.status(200).json(data);
-}
-
-export async function getCategory(req, res) {
-  let { page, category } = req.body;
+  let { page, category } = req.body; // 1페이지는 0, 2페이지는 1, ...
+  let data;
+  console.log("page: ", page);
   console.log("category: ", category);
   if(page === undefined) {
     page = 0;
   }
   page = parseInt(page)*10;
   page = page + "";
-  const data = await boardRepository.categoryPage(category, page);
-  console.log(data);
+
+  if(category == "all") {
+    data = await boardRepository.paging(page);
+  } else {
+    data = await boardRepository.categoryPage(category, page);
+  }
+
   res.status(200).json(data);
 }
 

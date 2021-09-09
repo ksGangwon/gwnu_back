@@ -7,8 +7,7 @@ const router = express.Router();
 var upload = multer({ storage: multer.memoryStorage() });
 
 // board
-router.get("/", boardController.getBoard); // 전체 페이지
-router.get("/category", boardController.getCategory); // 카테고리별 페이지
+router.get("/:", boardController.getBoard); // 전체 페이지
 router.get("/:id", boardController.getBoardId); // 게시글 페이지
 
 router.post("/file", boardController.findFile); // 중복 파일 찾기
