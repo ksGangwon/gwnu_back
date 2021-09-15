@@ -1,17 +1,18 @@
 import { db } from "../db/database.js";
 
-export async function getAll() {
-  return db.execute("SELECT * FROM notice").then((result) => result[0]);
-}
+// export async function getAll() {
+//   return db.execute("SELECT * FROM notice").then((result) => result[0]);
+// }
 
-export async function paging(page) {
+export async function paging(divide, page) {
   return db
     .execute(`SELECT *
               FROM (SELECT
                 @ROWNUM := @ROWNUM+1 as number, T.*
                 FROM notice T, (SELECT @ROWNUM := 0) TMP
                 ORDER BY id ASC) SUB
-              ORDER BY SUB.number DESC LIMIT ?, 10`, [page])
+              WHERE divide = ?
+              ORDER BY SUB.number DESC LIMIT ?, 10`, [divide, page])
     .then((result) => result[0]);
 }
 
@@ -29,7 +30,16 @@ export async function getById(id) {
   return db
     .execute("SELECT * FROM notice WHERE id=?", [id])
     .then((result) => result[0][0]);
-} 
+}
+
+export async function otherBoard(divide, id) {
+  return db
+    .execute(`SELECT * FROM notice WHERE id IN (
+      (SELECT id FROM notice WHERE divide=? AND id < ? ORDER BY id DESC LIMIT 1),
+      (SELECT id FROM notice WHERE divide=? AND id > ? ORDER BY id LIMIT 1)
+      )`, [ divide, id, divide, id ])
+    .then((result) => result[0]);
+}
 
 export async function aws_getById(id) {
   return db
@@ -54,11 +64,11 @@ export async function getJoin(id) {
     .then((result) => result[0]);
 }
 
-export async function create(title, description, category, date) {
+export async function create(title, description, category, date, divide) {
   return db
     .execute(
-      "INSERT INTO notice (title, description, category, date) VALUES(?, ?, ?, ?)",
-      [title, description, category, date]
+      "INSERT INTO notice (title, description, category, date, divide) VALUES(?, ?, ?, ?, ?)",
+      [title, description, category, date, divide]
     )
     .then((result) => getById(result[0].insertId));
 }

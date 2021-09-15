@@ -3,6 +3,7 @@ import "express-async-errors";
 import cors from "cors";
 import boardRouter from "./router/board.js";
 import authRouter from "./router/auth.js";
+import fileRouter from "./router/files.js";
 import session from "express-session";
 import cookieParser from "cookie-parser";
 
@@ -31,6 +32,7 @@ app.use(
 
 app.use("/board", boardRouter);
 app.use("/auth", authRouter);
+app.use("/files", fileRouter);
 
 app.use((req, res, next) => {
   res.sendStatus(404);
