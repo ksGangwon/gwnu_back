@@ -14,7 +14,7 @@ export async function getBoard(req, res) {
   page = page + "";
 
   if(category == "all") {
-    data = await boardRepository.paging(page, divide);
+    data = await boardRepository.paging(divide, page);
   } else {
     data = await boardRepository.categoryPage(category, page, divide);
   }
@@ -22,11 +22,11 @@ export async function getBoard(req, res) {
 }
 
 export async function getBoardId(req, res) {
-  const id = req.params.id;
+  const {divide,id} = req.params;
   await boardRepository.inquiry(id);
   const board = await boardRepository.getById(id);
   const files = await boardRepository.aws_getById(id);
-  const other = await boardRepository.otherBoard(id);
+  const other = await boardRepository.otherBoard(divide,id);
   let data = [board, files, other];
   if (board) {
     res.status(200).json(data);

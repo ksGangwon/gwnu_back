@@ -5,6 +5,7 @@ import { db } from "../db/database.js";
 // }
 
 export async function paging(divide, page) {
+  console.log(divide)
   return db
     .execute(`SELECT *
               FROM (SELECT
